@@ -34,6 +34,18 @@ public:
 	 * @param col Holds the return value for the column of the move
 	 * @param row Holds the return value for the row of the move
 	 */
+	void utility(OthelloBoard* b, int& val);
+
+	void successor(OthelloBoard* b, std::vector<OthelloBoard*>& sub, char sign);
+
+	void successor_with_dec(OthelloBoard* b, std::vector<OthelloBoard*>& sub, std::vector<std::vector<int>>& moves);
+
+	void minimax_dec(OthelloBoard* b,int& col, int& row);
+
+	int max_val(OthelloBoard* b);
+
+	int min_val(OthelloBoard* b);
+
     void get_move(OthelloBoard* b, int& col, int& row);
 
     /**
