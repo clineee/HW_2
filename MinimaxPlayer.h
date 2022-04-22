@@ -36,15 +36,15 @@ public:
 	 */
 	void utility(OthelloBoard* b, int& val);
 
-	void successor(OthelloBoard* b, std::vector<OthelloBoard*>& sub, char sign);
+	std::vector<OthelloBoard> successor(OthelloBoard* b, char sign);
 
-	void successor_with_dec(OthelloBoard* b, std::vector<OthelloBoard*>& sub, std::vector<std::vector<int>>& moves);
+	std::vector<OthelloBoard> successor_with_dec(OthelloBoard* b, std::vector<std::vector<int>>& moves);
+
+	int max_val(OthelloBoard b);
+
+	int min_val(OthelloBoard b);
 
 	void minimax_dec(OthelloBoard* b,int& col, int& row);
-
-	int max_val(OthelloBoard* b);
-
-	int min_val(OthelloBoard* b);
 
     void get_move(OthelloBoard* b, int& col, int& row);
 
