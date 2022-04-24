@@ -19,25 +19,16 @@ MinimaxPlayer::~MinimaxPlayer() {
 
 }
 
-void MinimaxPlayer::utility(OthelloBoard* b,int& val)
+int MinimaxPlayer::utility(OthelloBoard* b)
 {
-		if(b->count_score('X') <= b->count_score('O'))
-		{
-			val = 1;
-		}
-		else
-		{
-			val = -1;
-		}
-		b->display();
-		std::cout << "returned: " << val << "\nX score: " << b->count_score('X') << "\nO score: " << b->count_score('O') << '\n';
+	return b->count_score('O') - b->count_score('X');
 }
 
 //I wrote 2 versions of successor, one that just returned board states, 
 //and one that returned board states and the rows and cols for each state.
 vector<OthelloBoard> MinimaxPlayer::successor(OthelloBoard* b, char sign)
 {
-	 vector<OthelloBoard> sub;
+	vector<OthelloBoard> sub;
 	for(int i = 0; i < b->get_num_cols(); i++)
 	{
 		for(int j = 0; j < b->get_num_rows(); j++)
@@ -58,7 +49,6 @@ vector<OthelloBoard> MinimaxPlayer::successor(OthelloBoard* b, char sign)
 vector<OthelloBoard> MinimaxPlayer::successor_with_dec(OthelloBoard* b, vector<vector<int>>& moves)
 {
 	vector<OthelloBoard> sub;
-	int counter = 0;
 	for(int i = 0; i < b->get_num_cols(); i++)
 	{
 		for(int j = 0; j < b->get_num_rows(); j++)
@@ -80,56 +70,108 @@ vector<OthelloBoard> MinimaxPlayer::successor_with_dec(OthelloBoard* b, vector<v
 
 int MinimaxPlayer::max_val(OthelloBoard b)
 {
-	int v = 0;
+	int v = -17;
 	if(!b.has_legal_moves_remaining('X') && !b.has_legal_moves_remaining('O'))
 	{
-		std::cout << "\033[1;31mmax utility\n\033[0m";
-		utility(&b , v);
-		return v;
+		v = utility(&b);
+
+		//For debugging
+		std::cout << "returned max term: " << v << '\n';
+
+	}
+	else if(!b.has_legal_moves_remaining('X'))
+	{
+		v = min_val(b);
+
+		//For debugging
+		std::cout << "returned min no turn: " << v << '\n';
+
 	}
 	vector<OthelloBoard> sub = successor(&b,'X');
 	for(int i = 0; i < sub.size(); i++)
 	{
-		v = std::max(v, min_val(sub[i]));
+		int g = min_val(sub[0]);
+
+		//For debugging
+		std::cout << "Max v: " << v << " g: " << g << '\n';
+
+		v = std::max(v, g);
 	}
 	return v;
 }
 
 int MinimaxPlayer::min_val(OthelloBoard b)
 {
-	int v = 0;
+	int v = 17;
 	if(!b.has_legal_moves_remaining('X') && !b.has_legal_moves_remaining('O'))
 	{
-		std::cout << "\033[1;32mmin utility\n\033[0m";
-		utility(&b , v);
-		return v;
+		v = utility(&b);
+
+		//For debugging
+		std::cout << "returned min term: " << v << '\n';
+
+	}
+	else if(!b.has_legal_moves_remaining('O'))
+	{
+		v = max_val(b);
+
+		//For debugging
+		std::cout << "returned max no turn: " << v << '\n';
+
 	}
 	vector<OthelloBoard> sub = successor(&b,'O');
 	for(int i = 0; i < sub.size(); i++)
 	{
-		v = std::min(v, max_val(sub[i]));
+		int g = max_val(sub[i]);
+
+		//For debugging
+		std::cout << "Min v: " << v << " g: " << g << '\n';
+		
+		v = std::min(v, g);
 	}
 	return v;
 }
 
 void MinimaxPlayer::minimax_dec(OthelloBoard* b, int& col, int& row)
 {
-	vector<OthelloBoard> sub;
 	vector<vector<int>> moves;
+
+	//For debugging
+	vector <int> test;
+
+	vector<OthelloBoard> sub = successor_with_dec(b, moves);
 	int tar = 0;
-	int lead = 0;
-	sub = successor_with_dec(b, moves);
+	int lead = -18;
+	int  v = -19;
 	for(int i = 0; i < sub.size(); i++)
 	{
-		int j = min_val(sub[i]);
-		if(j >= lead)
+		v = min_val(sub[i]);
+
+		//For debugging
+		test.push_back(v);
+
+		lead = std::max(v, lead);
+		if(lead == v)
 		{
-			lead = j;
 			tar = i;
 		}
 	}
 	col = moves[tar][0];
 	row = moves[tar][1];
+
+	//For debugging
+	std::cout << "\033[1;31mSuccessors: " << sub.size() << '\n';
+	for(int i = 0; i < moves.size(); i++)
+	{
+		std::cout << "V value: " << test[i] << " cords: ";
+		for(int h = 0; h < moves[i].size(); h++)
+		{
+			std::cout << moves[i][h] << ' ';
+		}
+		std::cout << '\n';
+		sub[i].display();
+	}
+	std::cout << "Final val: " << lead << "\033[0m\n";
 }
 
 void MinimaxPlayer::get_move(OthelloBoard* b, int& col, int& row) {

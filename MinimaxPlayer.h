@@ -34,7 +34,7 @@ public:
 	 * @param col Holds the return value for the column of the move
 	 * @param row Holds the return value for the row of the move
 	 */
-	void utility(OthelloBoard* b, int& val);
+	int utility(OthelloBoard* b);
 
 	std::vector<OthelloBoard> successor(OthelloBoard* b, char sign);
 
