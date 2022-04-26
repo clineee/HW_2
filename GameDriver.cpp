@@ -51,8 +51,6 @@ GameDriver& GameDriver::operator=(const GameDriver& rhs) {
 }
 GameDriver::~GameDriver() {
 	delete board;
-	delete p1;
-	delete p2;
 }
 
 void GameDriver::display() {
@@ -122,6 +120,8 @@ void GameDriver::run() {
     } else {
 	std::cout << "Player 2 wins" << std::endl;
     }
+	delete current;
+	delete opponent;
 }
 
 int main(int argc, char** argv) {
@@ -131,5 +131,6 @@ int main(int argc, char** argv) {
 	}
 	GameDriver* game = new GameDriver(argv[1],argv[2],4,4);
 	game->run();
+	delete game;
 	return 0;
 }
